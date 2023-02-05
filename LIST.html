@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <title>찬양 목록</title>
+    <style>
+        table {
+          width: 100%;
+          border-collapse: collapse;
+        }
+  
+        th,
+        td {
+          border: 1px solid black;
+          padding: 8px;
+          text-align: left;
+        }
+  
+        th {
+          background-color: rgb(158, 220, 0);
+        }
+        @font-face {
+              font-family: 'font';
+              src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/GangwonEdu_OTFBoldA.woff') format('woff');
+              font-weight: normal;
+              font-style: normal;
+        }
+      </style>
+</head>
+<body>
+<h3 style="font-family: font; font-size:1.5em;">찬양 추가</h3>
+<input style="font-family: font; font-size:1.3em;" type="text" id="item-name" placeholder="추가할 내용을 입력하세요." >
+<button style="font-family: font; font-size:1.3em;" onclick="addItem()">추가</button>
+<br>
+<br>
+<h3 style="font-family: font; font-size:1.5em;">찬양 검색</h3>
+<input style="font-family: font; font-size:1.3em;" type="text" id="search-item" placeholder="검색할 내용을 입력하세요.">
+<button style="font-family: font; font-size:1.3em;" onclick="searchItem()">검색</button>
+<br>
+<br>
+
+<table id="item-table">
+    <tr>
+    <th style="font-family: font; font-size:1.5em;">번호</th>
+    <th style="font-family: font; font-size:1.5em;">제목</th>
+    <th style="font-family: font; font-size:1.5em;">삭제</th>
+    </tr>
+</table>
+
+<script>
+    let items = [];
+
+    function addItem() {
+    let itemName = document.getElementById("item-name").value;
+    items.push(itemName);
+    localStorage.setItem("items", JSON.stringify(items));
+    showItems();
+    }
+
+    function deleteItem(index) {
+    if (confirm("삭제하시겠습니까?")) {
+        items.splice(index, 1);
+        localStorage.setItem("items", JSON.stringify(items));
+        showItems();
+    }
+    }
+
+    function searchItem() {
+    let searchValue = document.getElementById("search-item").value;
+    let searchedItems = items.filter((item) => item.includes(searchValue));
+    items = searchedItems;
+    showItems();
+    }
+
+    function showItems() {
+    let itemsData = "";
+    for (let i = 0; i < items.length; i++) {
+        itemsData += `
+        <tr>
+            <td>${i + 1}</td>
+            <td>${items[i]}</td>
+            <td>
+            <button onclick="deleteItem(${i})">삭제</button>
+            </td>
+        </tr>
+        `;
+    }
+    document.getElementById("item-table").innerHTML = `
+        <tr>
+        <th style="font-family: font; font-size:1.5em;">번호</th>
+        <th style="font-family: font; font-size:1.5em;">제목</th>
+        <th style="font-family: font; font-size:1.5em;">삭제</th>
+        </tr>
+        ${itemsData}
+    `;
+    }
+
+    if (localStorage.getItem("items")) {
+    items = JSON.parse(localStorage.getItem("items"));
+    showItems();
+    }
+</script>
+</body>
+</html>
